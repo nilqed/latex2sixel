@@ -92,8 +92,6 @@ Linux, OS/2, MS Windows, OSX, VMS, and many other platforms. It can produce **si
 output. It also provides an easy mean to check if your terminal is capable to display
 sixel output: `gnuplot> test`
 
-![gp0](img(gnuplot_test.PNG)
-
 ![gp1](img/gp1.PNG)
 
 ![gp2](img/gp2.PNG)
@@ -101,6 +99,8 @@ sixel output: `gnuplot> test`
 ![gp3](img/gp3.PNG)
 
 ![gp4](img/gp4.PNG)
+
+![gp0](img/gnuplot_test.PNG)
 
 #### Calibration
 
