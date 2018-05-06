@@ -1,0 +1,24 @@
+-- Assuming the script fricas2sixel in $PATH (e.g. /usr/local/bin)
+-- Otherwise use "system bash fricas2sixel ...".
+-- Usage: sixel(expression), e.g. sixel(x^2).
+-- Calibration: type 'fricas2sixel' for help and change params till it fits
+
+sixel(x:TexFormat):Void == 
+  cmd:=concat ["system fricas2sixel -bg White -D 100 -fg Blue '",tex(x).1,"'"]
+  systemCommand(cmd)
+
+
+sixel(taylor(sin(x),x=0)) 
+sixel(continuedFraction %pi)
+sixel(taylor(1/(1+x^2),x=0)) 
+sixel(roman 1998)
+
+v:=vector [j^2 for j in 1..5]
+sixel(v)
+
+M:=matrix [v,v,v,v,v]
+sixel(M)
+
+I:=integrate(x^2*exp(-x^2),x)
+sixel(I)
+

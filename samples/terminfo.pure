@@ -1,0 +1,34 @@
+using system;
+
+// http://wiki.bash-hackers.org/scripting/terminalcodes
+
+let color_names = ["black","red","green","yellow","blue",
+                   "magenta","cyan","white"];
+
+setaf n = chr(27) + "[3" + str(n) + "m";
+setab n = chr(27) + "[4" + str(n) + "m";
+
+set_foreground_color c::string
+    = puts (setaf n) if n>=0 with n = index color_names c; end;
+    = puts (setaf 9) otherwise;
+    
+set_background_color c::string
+    = puts (setab n) if n>=0 with n = index color_names c; end;
+    = puts (setab 9) otherwise;
+    
+    
+/* ..
+   :Name: ``set_foregroud_color`` - set the foreground color (text)
+   :Synopsis: ``set_foreground_color``
+   :Description: Changes the foreground color by using ANSI VT100 terminal 
+   				 codes.
+   :Example: Here is how you can call ``set_foreground_color`` in Pure:
+     ::
+
+       > color_names;
+       ["black","red","green","yellow","blue","magenta","cyan","white"]
+       > set_foreground_color "yellow";
+       0
+
+   :See Also: set_background_color 
+*/
