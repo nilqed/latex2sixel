@@ -2,6 +2,8 @@
 
 [Sixel](https://en.wikipedia.org/wiki/Sixel) graphics is well suited to display images  on terminals (emulation) like [Mintty](https://mintty.github.io/) (Cygwin), [mlterm](http://mlterm.sourceforge.net/) or [Xterm](http://invisible-island.net/xterm/). Thanks to Hayaki Saito's [libsixel](http://saitoha.github.io/libsixel/), we can easily convert almost any format to sixel sequences (e.g. [img2sixel](http://saitoha.github.io/libsixel/#img2sixel)). 
 
+![ltx1](img/ltx1.PNG)
+
 ## latex2sixel
 This simple shell script converts **(La)TeX** chunks to sixel output by the following composition of tools:
 ```
@@ -55,6 +57,8 @@ latex2sixel '$$\sum_{j=0}^N q^j=\frac{q^{N+1}-1}{q-1}$$'
 latex2sixel '$$\forall x\in\mathbb{Z},\exists y\in\mathbb{Z}:x+y=0$$'
 ```
 
+![mintty](img/mintty.PNG)
+
 ## Applications
 
 A lot of mathematical software is able to produce **TeX** output, e.g. computer algebra systems ([CAS](https://en.wikipedia.org/wiki/Computer_algebra_system)) like FriCAS (Axiom), Maxima, Reduce, Sage, Sympy and a lot more. Many OO languages like Python or Pure have the capability to render the objects by a special representation field.  
@@ -65,8 +69,21 @@ sixel(x:TexFormat):Void ==
   systemCommand(cmd)
 ```
 we can render almost any expression as its LaTex representation in the console:
-![sixel-fricas](img/fricas1.png)
 
+![sixel-fricas](img/fricas1.PNG)
+
+The function can be included into the startup file (`.fricas.input`), then the usage is: `sixel expression`.
+
+Another example is Pure:
+
+## GnuPlot
+![gp1](img/gp1.PNG)
+
+![gp2](img/gp2.PNG)
+
+![gp3](img/gp3.PNG)
+
+![gp4](img/gp4.PNG)
 
 
 
