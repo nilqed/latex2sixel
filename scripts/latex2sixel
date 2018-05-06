@@ -1,0 +1,118 @@
+#!/bin/bash
+
+
+function usage()
+{
+cat <<ENDUSAGE
+
+This is latex2sixel V 1.0.0 :: (TeX Live)
+
+Usage: $0 [OPTION]... TEXSTRING
+Options are chosen to be similar to dvips' options where possible:
+
+  -D #         Output resolution
+  -O c         Image offset
+  -T c         Image size (also accepts '-T bbox' and '-T tight')
+
+  -bg s        Background color (TeX-style color or 'Transparent')
+  -fg s        Foreground color (TeX-style color)
+
+  -h | --help  Help
+
+  # = number   s = string
+  c = comma-separated dimension pair (e.g., 3.2in,-32.1cm)
+
+  TEXSTRING is a LaTeX expression betweeen apostrophes (not quotes).
+  Examples: '\$\alpha\$' | '\LaTeX' | 'This is math: \$x+y\$'.
+
+Required applications: latex, dvipng, img2sixel.
+Terminals supporting sixel graphics: xterm -ti vt340, mintty, mlterm.
+
+ENDUSAGE
+}
+
+
+[[ $# == 0 ]]       && { usage;exit; };
+[[ $1 == -h ]]      && { usage;exit; };
+[[ $1 == --help ]]  && { usage;exit; };
+
+
+#
+# config (default)
+#
+pt=11pt
+fg=Green
+bg=Black
+D=150  #120
+T=bbox  #bbox,tight ...
+O=-1.0cm,-2.0cm
+img=img.png
+
+
+#
+# option parsing
+#
+while [[ $# -gt 1 ]]
+do
+arg="$1"
+
+case $arg in
+    -D|--resolution)
+    D="$2"
+    shift # past argument
+    ;;
+    -O|--offset)
+    O="$2"
+    shift # past argument
+    ;;
+    -T|--size)
+    T="$2"
+    shift # past argument
+    ;;
+    -fg|--forecolor)
+    fg="$2"
+    ;;
+    -bg|--backcolor)
+    bg="$2"
+    ;;
+    *)
+            # unknown option
+    ;;
+esac
+shift # past argument or value
+done
+
+
+#
+# TeX
+#
+
+texsrc=$BASH_ARGV
+
+TEX=$(cat <<EOF
+\documentclass[$pt]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{breqn}
+\pagestyle{empty}
+\begin{document}
+ $texsrc
+\end{document}
+EOF
+)
+
+#echo $TEX
+
+LATEX="latex -jobname=sixel -interaction=nonstopmode"
+DVIPNG="dvipng -T $T -D $D -O $O -fg $fg -bg $bg -q -o $img"
+
+#mkfifo sixel.dvi
+#ls -l sixel.dvi
+
+echo $TEX | $LATEX > /dev/null 2>&1
+$DVIPNG sixel.dvi  > /dev/null 2>&1
+img2sixel $img
+
+rm sixel.*
+rm img.png
+
+
