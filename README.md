@@ -44,7 +44,11 @@ Terminals supporting sixel graphics: xterm -ti vt340, mintty, mlterm.
 
 ```
 
-The script is just a skeleton and may be adjusted to your needs.
+The script is just a skeleton and may be adjusted to your needs. 
+
+#### Installation
+Just copy the file(s) in the `script` directory to a folder in the path,
+e.g. `/usr/local/bin` or `.local/bin`.
 
 #### Examples
 ```
@@ -74,9 +78,22 @@ we can render almost any expression as its LaTex representation in the console:
 
 The function can be included into the startup file (`.fricas.input`), then the usage is: `sixel expression`.
 
-Another example is Pure:
+![fricas-xterm](img/Selection_004.png)
+
+Another example is [Pure](https://agraef.github.io/pure-lang/):
+
+![pure](img/pure_sixel.png)
+
+For details consult the sample file `sixel.pure` in the `sample`folder.
 
 ## GnuPlot
+[GnuPlot](http://gnuplot.info/) is a portable command-line driven graphing utility for 
+Linux, OS/2, MS Windows, OSX, VMS, and many other platforms. It can produce **sixel**
+output. It also provides an easy mean to check if your terminal is capable to display
+sixel output: `gnuplot> test`
+
+![gp0](img(gnuplot_test.PNG)
+
 ![gp1](img/gp1.PNG)
 
 ![gp2](img/gp2.PNG)
@@ -85,9 +102,13 @@ Another example is Pure:
 
 ![gp4](img/gp4.PNG)
 
+#### Calibration
 
+![gp5](img/calibrate.PNG)
 
+![gp6](img/2.PNG)
 
+---
 
 
 
