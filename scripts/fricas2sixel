@@ -5,7 +5,7 @@ function usage()
 {
 cat <<ENDUSAGE
 
-This is fricas2sixel V 1.0.0 :: (TeX Live)
+This is fricas2sixel V 1.0.1 :: (TeX Live)
 
 Usage: $0 [OPTION]... TEXSTRING
 Options are chosen to be similar to dvips' options where possible:
@@ -46,7 +46,7 @@ bg=Black
 D=150  #120
 T=bbox  #bbox,tight ...
 O=-1.0cm,-2.0cm
-img=img.png
+img=sixelW23xeTpQ.png
 
 
 #
@@ -104,19 +104,17 @@ TEX=$(cat <<EOF
 EOF
 )
 
-#echo $TEX
 
-LATEX="latex -jobname=sixel -interaction=nonstopmode"
+LATEX="latex -jobname=sixelW23xeTpQ -interaction=nonstopmode"
 DVIPNG="dvipng -T $T -D $D -O $O -fg $fg -bg $bg -q -o $img"
 
-#mkfifo sixel.dvi
-#ls -l sixel.dvi
+
 
 echo $TEX | $LATEX > /dev/null 2>&1
-$DVIPNG sixel.dvi  > /dev/null 2>&1
+$DVIPNG sixelW23xeTpQ.dvi  > /dev/null 2>&1
 img2sixel $img
 
-rm sixel.*
-rm img.png
+rm sixelW23xeTpQ.*
+
 
 
