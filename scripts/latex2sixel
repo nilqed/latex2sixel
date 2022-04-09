@@ -5,7 +5,7 @@ function usage()
 {
 cat <<ENDUSAGE
 
-This is latex2sixel V 1.0.0 :: (TeX Live)
+This is latex2sixel V 1.0.1 :: (TeX Live)
 
 Usage: $0 [OPTION]... TEXSTRING
 Options are chosen to be similar to dvips' options where possible:
@@ -27,6 +27,7 @@ Options are chosen to be similar to dvips' options where possible:
 
 Required applications: latex, dvipng, img2sixel.
 Terminals supporting sixel graphics: xterm -ti vt340, mintty, mlterm.
+More info @  https://github.com/saitoha/libsixel
 
 ENDUSAGE
 }
@@ -46,7 +47,7 @@ bg=Black
 D=150  #120
 T=bbox  #bbox,tight ...
 O=-1.0cm,-2.0cm
-img=img.png
+img=sixel355113XrTz.png
 
 
 #
@@ -100,19 +101,14 @@ TEX=$(cat <<EOF
 EOF
 )
 
-#echo $TEX
 
-LATEX="latex -jobname=sixel -interaction=nonstopmode"
+LATEX="latex -jobname=sixel355113XrTz -interaction=nonstopmode"
 DVIPNG="dvipng -T $T -D $D -O $O -fg $fg -bg $bg -q -o $img"
 
-#mkfifo sixel.dvi
-#ls -l sixel.dvi
 
 echo $TEX | $LATEX > /dev/null 2>&1
-$DVIPNG sixel.dvi  > /dev/null 2>&1
+$DVIPNG sixel355113XrTz.dvi  > /dev/null 2>&1
 img2sixel $img
 
-rm sixel.*
-rm img.png
-
+rm sixel355113XrTz.*
 
