@@ -19,9 +19,9 @@ Therefore, the requirements to render LaTex chunks to a sixel graphics capable c
 ```
 $ latex2sixel
 
-This is latex2sixel V 1.0.0 :: (TeX Live)
+This is latex2sixel V 1.0.2 (Mon Apr 11 15:59:19 CEST 2022)
 
-Usage: /usr/local/bin/latex2sixel [OPTION]... TEXSTRING
+Usage: ./latex2sixel [OPTION]... TEXSTRING
 Options are chosen to be similar to dvips' options where possible:
 
   -D #         Output resolution
@@ -41,6 +41,8 @@ Options are chosen to be similar to dvips' options where possible:
 
 Required applications: latex, dvipng, img2sixel.
 Terminals supporting sixel graphics: xterm -ti vt340, mintty, mlterm.
+More info @  https://github.com/saitoha/libsixel
+
 
 ```
 
@@ -109,6 +111,10 @@ sixel output: `gnuplot> test`
 ![gp6](img/2.PNG)
 
 ---
+
+![p7](img/l2x.PNG)
+
+![p8](img/l2x2.png)
 
 
 

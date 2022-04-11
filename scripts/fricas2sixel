@@ -5,7 +5,7 @@ function usage()
 {
 cat <<ENDUSAGE
 
-This is fricas2sixel V 1.0.1 :: (TeX Live)
+This is fricas2sixel V 1.0.2 (Mon Apr 11 15:59:19 CEST 2022)
 
 Usage: $0 [OPTION]... TEXSTRING
 Options are chosen to be similar to dvips' options where possible:
@@ -27,6 +27,7 @@ Options are chosen to be similar to dvips' options where possible:
 
 Required applications: latex, dvipng, img2sixel.
 Terminals supporting sixel graphics: xterm -ti vt340, mintty, mlterm.
+More info @  https://github.com/saitoha/libsixel
 
 ENDUSAGE
 }
@@ -46,7 +47,8 @@ bg=Black
 D=150  #120
 T=bbox  #bbox,tight ...
 O=-1.0cm,-2.0cm
-img=sixelW23xeTpQ.png
+key=$(basename $(mktemp -u))
+img=$key.png
 
 
 #
@@ -83,9 +85,7 @@ shift # past argument or value
 done
 
 
-#
-# TeX
-#
+# TeX template 
 
 texsrc=$BASH_ARGV
 
@@ -105,16 +105,16 @@ EOF
 )
 
 
-LATEX="latex -jobname=sixelW23xeTpQ -interaction=nonstopmode"
+
+LATEX="latex -jobname=$key -interaction=nonstopmode"
 DVIPNG="dvipng -T $T -D $D -O $O -fg $fg -bg $bg -q -o $img"
 
 
-
 echo $TEX | $LATEX > /dev/null 2>&1
-$DVIPNG sixelW23xeTpQ.dvi  > /dev/null 2>&1
+$DVIPNG $key.dvi  > /dev/null 2>&1
 img2sixel $img
 
-rm sixelW23xeTpQ.*
-
-
+# CAUTION -- removing files
+# You may comment the line below if unsure ;)
+rm $key.*
 
