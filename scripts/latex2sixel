@@ -49,7 +49,7 @@ T=bbox  #bbox,tight ...
 O=-1.0cm,-2.0cm
 tmpdir=$(mktemp --tmpdir -d l2s.XXXXXX)
 key=$tmpdir/l2s
-img=$key/$(tr -dc '[A-Za-z]' <<<"$1" | cut -c-70).png
+img=$key-$(tr -dc '[A-Za-z]' <<<"$1" | cut -c-70).png
 
 trap cleanup EXIT
 function cleanup() {
@@ -122,7 +122,7 @@ DVIPNG="dvipng -T $T -D $D -O $O -fg $fg -bg $bg -q -o $img"
 
 echo $TEX | $LATEX > /dev/null ||
     die "$(sed -n '/^Here is how much of TeX/,$d;/^!/,$ p' $key.log)"
-$DVIPNG $key.dvi  > /dev/null 2>&1
+$DVIPNG $key.dvi  > /dev/null
 img2sixel $img
 
 # Temp files are automatically removed by cleanup() at exit.
