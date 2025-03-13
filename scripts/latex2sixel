@@ -47,9 +47,16 @@ bg=Black
 D=150  #120
 T=bbox  #bbox,tight ...
 O=-1.0cm,-2.0cm
-key=$(basename $(mktemp -u))
-img=$key.png
+tmpdir=$(mktemp --tmpdir -d l2s.XXXXXX)
+key=$tmpdir/l2s
+img=$key/$(tr -dc '[A-Za-z]' <<<"$1" | cut -c-70).png
 
+trap cleanup EXIT
+cleanup() {
+    # CAUTION -- removing files
+    # You may comment the line below if unsure ;)
+    rm -r "$tmpdir"
+}
 
 #
 # option parsing
@@ -109,7 +116,4 @@ echo $TEX | $LATEX > /dev/null 2>&1
 $DVIPNG $key.dvi  > /dev/null 2>&1
 img2sixel $img
 
-# CAUTION -- removing files
-# You may comment the line below if unsure ;)
-rm $key.*
-
+# Temp files are automatically removed by cleanup() at exit.
