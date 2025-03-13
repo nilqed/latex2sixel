@@ -105,7 +105,7 @@ done
 texsrc=$BASH_ARGV
 
 TEX=$(cat <<EOF
-\documentclass[$pt]{minimal}
+\documentclass[$pt]{article}
 \usepackage{amsmath,amssymb}
 \usepackage{breqn}
 \pagestyle{empty}
