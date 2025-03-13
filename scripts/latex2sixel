@@ -47,9 +47,24 @@ bg=Black
 D=150  #120
 T=bbox  #bbox,tight ...
 O=-1.0cm,-2.0cm
-key=$(basename $(mktemp -u))
-img=$key.png
+tmpdir=$(mktemp --tmpdir -d l2s.XXXXXX)
+key=$tmpdir/l2s
+img=$key-$(tr -dc '[A-Za-z]' <<<"$1" | cut -c-70).png
 
+trap cleanup EXIT
+function cleanup() {
+    # CAUTION -- removing files
+    # You may comment the line below if unsure ;)
+    rm -r "$tmpdir"
+}
+
+trap die ERR
+function die() {
+    echo -n "latex2sixel: Dying at line "
+    caller
+    for arg; do echo; echo "$arg"; done
+    kill 0			# Exit even though we're in a subshell
+}
 
 #
 # option parsing
@@ -101,15 +116,13 @@ EOF
 )
 
 
-LATEX="latex -jobname=$key -interaction=nonstopmode"
+LATEX="latex -jobname=$key -halt-on-error -output-directory $tmpdir"
 DVIPNG="dvipng -T $T -D $D -O $O -fg $fg -bg $bg -q -o $img"
 
 
-echo $TEX | $LATEX > /dev/null 2>&1
-$DVIPNG $key.dvi  > /dev/null 2>&1
+echo $TEX | $LATEX > /dev/null ||
+    die "$(sed -n '/^Here is how much of TeX/,$d;/^!/,$ p' $key.log)"
+$DVIPNG $key.dvi  > /dev/null
 img2sixel $img
 
-# CAUTION -- removing files
-# You may comment the line below if unsure ;)
-rm $key.*
-
+# Temp files are automatically removed by cleanup() at exit.
