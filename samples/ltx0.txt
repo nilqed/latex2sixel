@@ -1,7 +1,7 @@
 
 
 latex2sixel '$-\frac{\hbar^2}{2m}\,\Delta\psi+V\,\psi=E\,\psi$'
-latex2sixel \\partial{T}\(\\phi\)=T\(d\\phi\)
+latex2sixel \$\\partial{T}\(\\phi\)=T\(d\\phi\)\$
 latex2sixel '$$\int_{\partial\Omega}\omega=\int_\Omega\,d\omega$$'
 latex2sixel '\LaTeX\ is\ cool :)'
 
