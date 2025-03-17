@@ -69,34 +69,52 @@ function die() {
 #
 # option parsing
 #
-while [[ $# -gt 1 ]]
-do
-arg="$1"
+TEMP=$(getopt -a -n 'latex2sixel' -o 'D:O:T:h' \
+       --long 'resolution:,offset:,size:,fg:,forecolor:,bg:,backcolor,help' \
+       -- "$@")
+if [ $? -ne 0 ]; then
+    usage
+    exit 1
+fi
+eval set -- "$TEMP"
+unset TEMP
 
-case $arg in
-    -D|--resolution)
-    D="$2"
-    shift # past argument
-    ;;
-    -O|--offset)
-    O="$2"
-    shift # past argument
-    ;;
-    -T|--size)
-    T="$2"
-    shift # past argument
-    ;;
-    -fg|--forecolor)
-    fg="$2"
-    ;;
-    -bg|--backcolor)
-    bg="$2"
-    ;;
-    *)
-            # unknown option
-    ;;
-esac
-shift # past argument or value
+while true; do
+    case "$1" in
+	-h|--help) usage; exit
+	    ;;
+	-D|--resolution)
+	    D="$2"
+	    shift 2 # past argument
+	    continue
+	    ;;
+	-O|--offset)
+	    O="$2"
+	    shift 2 # past argument
+	    continue
+	    ;;
+	-T|--size)
+	    T="$2"
+	    shift 2 # past argument
+	    continue
+	    ;;
+	--fg|--forecolor)
+	    fg="$2"
+	    shift 2 # past argument
+	    continue
+	    ;;
+	--bg|--backcolor)
+	    bg="$2"
+	    shift 2 # past argument
+	    continue
+	    ;;
+	--) shift; break
+	    ;;
+	*)
+            echo 'Internal Error' >&2
+	    exit 1
+	    ;;
+    esac
 done
 
 
