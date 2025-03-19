@@ -31,8 +31,11 @@ More info @  https://github.com/saitoha/libsixel
 ENDUSAGE
 }
 
+if ! tty -s; then
+    set -- "$@" "$(</dev/stdin)"
+fi
 
-[[ $# == 0 ]]       && { usage;exit; };
+[[ $# == 0 ]]        && { usage;exit; };
 
 #
 # config (default)
