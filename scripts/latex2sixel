@@ -13,11 +13,10 @@ Options are chosen to be similar to dvips' options where possible:
   -D #         Output resolution
   -O c         Image offset
   -T c         Image size (also accepts '-T bbox' and '-T tight')
+  -t	       Remove margins (shorthand for '-T tight')
 
   -bg s        Background color (TeX-style color or 'Transparent')
   -fg s        Foreground color (TeX-style color)
-
-  -h | --help  Help
 
   # = number   s = string
   c = comma-separated dimension pair (e.g., 3.2in,-32.1cm)
@@ -68,7 +67,7 @@ function die() {
 #
 # option parsing
 #
-TEMP=$(getopt -a -n 'latex2sixel' -o 'D:O:T:h' \
+TEMP=$(getopt -a -n 'latex2sixel' -o 'D:O:T:ht' \
        --long 'resolution:,offset:,size:,fg:,forecolor:,bg:,backcolor,help' \
        -- "$@")  ||  die "Use -h for help"
 eval set -- "$TEMP"		# Set Bash argv in "$@"
@@ -91,6 +90,11 @@ while true; do
 	-T|--size)
 	    T="$2"
 	    shift 2 # past argument
+	    continue
+	    ;;
+	-t)
+	    T="tight"
+	    shift
 	    continue
 	    ;;
 	--fg|--forecolor)
