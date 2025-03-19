@@ -79,33 +79,26 @@ while true; do
 	    ;;
 	-D|--resolution)
 	    D="$2"
-	    shift 2 # past argument
-	    continue
+	    shift # past argument
 	    ;;
 	-O|--offset)
 	    O="$2"
-	    shift 2 # past argument
-	    continue
+	    shift # past argument
 	    ;;
 	-T|--size)
 	    T="$2"
-	    shift 2 # past argument
-	    continue
+	    shift # past argument
 	    ;;
 	-t)
 	    T="tight"
-	    shift
-	    continue
 	    ;;
 	--fg|--forecolor)
 	    fg="$2"
-	    shift 2 # past argument
-	    continue
+	    shift # past argument
 	    ;;
 	--bg|--backcolor)
 	    bg="$2"
-	    shift 2 # past argument
-	    continue
+	    shift # past argument
 	    ;;
 	--) shift; break
 	    ;;
@@ -114,6 +107,7 @@ while true; do
 	    exit 1
 	    ;;
     esac
+    shift
 done
 
 
