@@ -61,7 +61,7 @@ trap die ERR
 function die() {
     echo -n "latex2sixel: Dying at line "
     caller
-    for arg; do echo; echo "$arg"; done
+    for arg; do echo "latex2sixel: $arg"; done
     kill 0			# Exit even though we're in a subshell
 }
 
@@ -70,10 +70,7 @@ function die() {
 #
 TEMP=$(getopt -a -n 'latex2sixel' -o 'D:O:T:h' \
        --long 'resolution:,offset:,size:,fg:,forecolor:,bg:,backcolor,help' \
-       -- "$@")
-if [ $? -ne 0 ]; then
-    usage; exit 1
-fi
+       -- "$@")  ||  die "Use -h for help"
 eval set -- "$TEMP"		# Set Bash argv in "$@"
 unset TEMP
 
