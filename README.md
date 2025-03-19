@@ -27,11 +27,10 @@ Options are chosen to be similar to dvips' options where possible:
   -D #         Output resolution
   -O c         Image offset
   -T c         Image size (also accepts '-T bbox' and '-T tight')
+  -t	       Remove margins (shorthand for '-T tight')
 
   -bg s        Background color (TeX-style color or 'Transparent')
   -fg s        Foreground color (TeX-style color)
-
-  -h | --help  Help
 
   # = number   s = string
   c = comma-separated dimension pair (e.g., 3.2in,-32.1cm)
@@ -64,6 +63,19 @@ latex2sixel '$$\forall x\in\mathbb{Z},\exists y\in\mathbb{Z}:x+y=0$$'
 ```
 
 ![mintty](img/mintty.PNG)
+
+More complicated latex fragments can be stored in a file and passed to
+latex2sixel as stdin. (Example: [protocol.ltx](samples/protocol.ltx).)
+
+```bash
+echo '\Large\LaTeX' | latex2sixel
+latex2sixel < protocol.ltx
+latex2sixel '\Large' < protocol.ltx
+latex2sixel -fg Dandelion '\LARGE' < protocol.ltx
+```
+
+![output of protocol.ltx in an xterm ](img/xterm.png)
+
 
 ## Applications
 
@@ -115,17 +127,4 @@ sixel output: `gnuplot> test`
 ![p7](img/l2x.PNG)
 
 ![p8](img/l2x2.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
 
