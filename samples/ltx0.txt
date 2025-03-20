@@ -9,3 +9,5 @@ latex2sixel '$$\sum_{j=0}^N q^j=\frac{q^{N+1}-1}{q-1}$$'
 latex2sixel '$$\forall x\in\mathbb{Z},\exists y\in\mathbb{Z}:x+y=0$$'
 
 cat protocol.ltx | latex2sixel
+
+latex2sixel <spectrum.ltx
