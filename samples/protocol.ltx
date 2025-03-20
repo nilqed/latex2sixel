@@ -1,0 +1,29 @@
+%% We want to draw the following protocol diagram
+
+%% ESC P  Ps1 ; Ps2 ; Pn3 q " Pn4 ; Pn5 ; Pn6 ; Pn7  ******  ESC \
+%%
+%% \___/  \_______________/ \_____________________/  \____/  \___/
+%%  DCS   Protocol Selector    Raster Attributes     Picture  ST
+%%                                                    data
+%% \______________________/ \_____________________________/ 
+%%  DCS Introducer Sequence     sixel data
+
+\[
+\underbrace{
+  \underbrace{\textbf{Esc}\ \textbf{P}}
+  	    _{\textbf{DCS}} \quad
+  \underbrace{Ps_1 \ \textbf{;}\ Ps_2\ \textbf{;}\ Pn_3\ \textbf{q}}
+             _{\textbf{Protocol Selector}}}
+_{\textbf{DCS Introducer Sequence}}
+\quad
+\underbrace{
+  \underbrace
+      {\texttt{"}\ Pn_4 \ \textbf{;}\ Pn_5\ \textbf{;}\ Pn_6\ \textbf{;}\ Pn_7}
+      _{\textbf{Raster Attributes} }
+      \quad
+      \underbrace{******}_{\textbf{Picture data}}}
+_{\textbf{sixel data}}
+  \quad
+  \underbrace{\textbf{Esc }\backslash}_{\textbf{ST}}
+\]
+

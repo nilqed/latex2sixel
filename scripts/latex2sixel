@@ -13,11 +13,10 @@ Options are chosen to be similar to dvips' options where possible:
   -D #         Output resolution
   -O c         Image offset
   -T c         Image size (also accepts '-T bbox' and '-T tight')
+  -t	       Remove margins (shorthand for '-T tight')
 
   -bg s        Background color (TeX-style color or 'Transparent')
   -fg s        Foreground color (TeX-style color)
-
-  -h | --help  Help
 
   # = number   s = string
   c = comma-separated dimension pair (e.g., 3.2in,-32.1cm)
@@ -28,15 +27,14 @@ Options are chosen to be similar to dvips' options where possible:
 Required applications: latex, dvipng, img2sixel.
 Terminals supporting sixel graphics: xterm -ti vt340, mintty, mlterm.
 More info @  https://github.com/saitoha/libsixel
-
 ENDUSAGE
 }
 
+if ! tty -s; then
+    set -- "$@" "$(</dev/stdin)"
+fi
 
-[[ $# == 0 ]]       && { usage;exit; };
-[[ $1 == -h ]]      && { usage;exit; };
-[[ $1 == --help ]]  && { usage;exit; };
-
+[[ $# == 0 ]]        && { usage;exit; };
 
 #
 # config (default)
@@ -62,47 +60,58 @@ trap die ERR
 function die() {
     echo -n "latex2sixel: Dying at line "
     caller
-    for arg; do echo; echo "$arg"; done
+    for arg; do echo "latex2sixel: $arg"; done
     kill 0			# Exit even though we're in a subshell
 }
 
 #
 # option parsing
 #
-while [[ $# -gt 1 ]]
-do
-arg="$1"
+TEMP=$(getopt -a -n 'latex2sixel' -o 'D:O:T:ht' \
+       --long 'resolution:,offset:,size:,fg:,forecolor:,bg:,backcolor,help' \
+       -- "$@")  ||  die "Use -h for help"
+eval set -- "$TEMP"		# Set Bash argv in "$@"
+unset TEMP
 
-case $arg in
-    -D|--resolution)
-    D="$2"
-    shift # past argument
-    ;;
-    -O|--offset)
-    O="$2"
-    shift # past argument
-    ;;
-    -T|--size)
-    T="$2"
-    shift # past argument
-    ;;
-    -fg|--forecolor)
-    fg="$2"
-    ;;
-    -bg|--backcolor)
-    bg="$2"
-    ;;
-    *)
-            # unknown option
-    ;;
-esac
-shift # past argument or value
+while true; do
+    case "$1" in
+	-h|--help) usage; exit
+	    ;;
+	-D|--resolution)
+	    D="$2"
+	    shift # past argument
+	    ;;
+	-O|--offset)
+	    O="$2"
+	    shift # past argument
+	    ;;
+	-T|--size)
+	    T="$2"
+	    shift # past argument
+	    ;;
+	-t)
+	    T="tight"
+	    ;;
+	--fg|--forecolor)
+	    fg="$2"
+	    shift # past argument
+	    ;;
+	--bg|--backcolor)
+	    bg="$2"
+	    shift # past argument
+	    ;;
+	--) shift; break
+	    ;;
+	*)
+            echo 'Internal Error' >&2
+	    exit 1
+	    ;;
+    esac
+    shift
 done
 
 
 # TeX template 
-
-texsrc=$BASH_ARGV
 
 TEX=$(cat <<EOF
 \documentclass[$pt]{article}
@@ -110,7 +119,7 @@ TEX=$(cat <<EOF
 \usepackage{breqn}
 \pagestyle{empty}
 \begin{document}
- $texsrc
+ $@
 \end{document}
 EOF
 )
@@ -120,7 +129,7 @@ LATEX="latex -jobname=$key -halt-on-error -output-directory $tmpdir"
 DVIPNG="dvipng -T $T -D $D -O $O -fg $fg -bg $bg -q -o $img"
 
 
-echo $TEX | $LATEX > /dev/null ||
+$LATEX <<<"$TEX" > /dev/null ||
     die "$(sed -n '/^Here is how much of TeX/,$d;/^!/,$ p' $key.log)"
 $DVIPNG $key.dvi  > /dev/null
 img2sixel $img

@@ -1,12 +1,11 @@
 
 
 latex2sixel '$-\frac{\hbar^2}{2m}\,\Delta\psi+V\,\psi=E\,\psi$'
-latex2sixel \\partial{T}\(\\phi\)=T\(d\\phi\)
+latex2sixel \$\\partial{T}\(\\phi\)=T\(d\\phi\)\$
 latex2sixel '$$\int_{\partial\Omega}\omega=\int_\Omega\,d\omega$$'
 latex2sixel '\LaTeX\ is\ cool :)'
 
 latex2sixel '$$\sum_{j=0}^N q^j=\frac{q^{N+1}-1}{q-1}$$'
 latex2sixel '$$\forall x\in\mathbb{Z},\exists y\in\mathbb{Z}:x+y=0$$'
 
-
-
+cat protocol.ltx | latex2sixel
