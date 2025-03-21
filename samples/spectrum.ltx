@@ -1,0 +1,15 @@
+%% Example of selecting color by its wavelength (in nanometers)
+%% from the xcolor package documentation.
+
+\newcount\WL \unitlength.75pt
+\begin{picture}(460,60)(355,-10)
+  \sffamily \tiny \linethickness{1.25\unitlength} \WL=360
+  \multiput(360,0)(1,0){456}%
+           {{\color[wave]{\the\WL}\line(0,1){50}}\global\advance\WL1}
+           \linethickness{0.25\unitlength}\WL=360
+           \multiput(360,0)(20,0){23}%
+                    {\picture(0,0)
+                      \line(0,-1){5} \multiput(5,0)(5,0){3}{\line(0,-1){2.5}}
+                      \put(0,-10){\makebox(0,0){\the\WL}}\global\advance\WL20
+                      \endpicture}
+\end{picture}
