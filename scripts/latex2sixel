@@ -11,27 +11,34 @@ Usage: $0 [OPTION]... TEXSTRING
 Options are chosen to be similar to dvips' options where possible:
 
   -D #         Output resolution (default: $D dpi)
-  -I #         Image left indent (default: $I terminal columns)
+  -O c         Image offset (default: $O)
+  -T c         Image size (also accepts '-T bbox' and '-T tight')
+  -t	       Remove margins (shorthand for '-T tight')
 
   -bg s        Background color (TeX-style color or 'Transparent')
-  -fg s        Foreground color (TeX-style color or 'list' )
+  -fg s        Foreground color (TeX-style color)
 
   # = number   s = string
+  c = comma-separated dimension pair (e.g., -1.2in,3.4cm)
 
   TEXSTRING is a LaTeX expression betweeen apostrophes (not quotes).
   Examples: '\$\alpha\$' | '\LaTeX' | 'This is math: \$x+y\$'.
 
 Required applications: latex, dvipng, img2sixel.
 Terminals supporting sixel graphics: xterm -ti vt340, mintty, mlterm.
-More info @  https://github.com/saitoha/libsixel
+More info @  $(osc8 https://github.com/saitoha/libsixel)
 ENDUSAGE
+}
+
+osc8() {
+    # Given a URL, print it with the OSC 8 hyperlink escape sequence.
+    printf '\e]8;;%s\e\\%s' "$1" "$1"
+    printf '\e]8;;\e\\'
 }
 
 if ! tty -s; then
     set -- "$@" "$(</dev/stdin)"
 fi
-
-[[ $# == 0 ]]        && { usage;exit; };
 
 #
 # config (default)
@@ -41,8 +48,11 @@ fg=Green
 bg=Black
 D=150  #120
 T=bbox  #bbox,tight ...
-O=0.25cm,0.25cm			# No longer used due to preview package.
-I=5
+O=1.4cm,0.8cm
+I=0
+
+[[ $# == 0 ]]        && { usage;exit; };
+
 tmpdir=$(mktemp --tmpdir -d l2s.XXXXXX)
 key=$tmpdir/l2s
 img=$key-$(tr -dc '[A-Za-z]' <<<"$1" | cut -c-70).png
@@ -86,8 +96,8 @@ while true; do
 	    shift # past argument
 	    ;;
 	-I|--indent)
-	    [[ "$2" =~ [^0-9] ]] && die "-I takes an integer, not '$2'"
-	    I="$2"
+	    I="${2:-0}"
+	    [[ "$I" =~ [^0-9] ]] && die "-I takes an integer, not '$I'"
 	    shift # past argument
 	    ;;
 	-T|--size)
@@ -155,6 +165,7 @@ EOF
 
 LATEX="latex -jobname=$key -halt-on-error -output-directory $tmpdir"
 DVIPNG="dvipng --truecolor -T $T -D $D -O $O -fg $fg -bg $bg -q -o $img"
+
 
 $LATEX <<<"$TEX" > /dev/null ||
     die "$(sed -n '/^Here is how much of TeX/,$d;/^!/,$ p' $key.log)"
