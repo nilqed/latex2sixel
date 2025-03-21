@@ -12,14 +12,11 @@ Options are chosen to be similar to dvips' options where possible:
 
   -D #         Output resolution (default: $D dpi)
   -I #         Image left indent (default: $I terminal columns)
-  -T c         Image size (also accepts '-T bbox' and '-T tight')
-  -t	       Remove margins (shorthand for '-T tight -I 0')
 
   -bg s        Background color (TeX-style color or 'Transparent')
-  -fg s        Foreground color (TeX-style color)
+  -fg s        Foreground color (TeX-style color or 'list' )
 
   # = number   s = string
-  c = comma-separated dimension pair (e.g., 3.2in,-32.1cm)
 
   TEXSTRING is a LaTeX expression betweeen apostrophes (not quotes).
   Examples: '\$\alpha\$' | '\LaTeX' | 'This is math: \$x+y\$'.
