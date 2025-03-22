@@ -7,18 +7,19 @@ cat <<ENDUSAGE
 
 This is latex2sixel V 1.0.2 (Mon Apr 11 15:59:19 CEST 2022)
 
-Usage: $0 [OPTION]... TEXSTRING
+Usage: $0 [OPTION]... TEXSTRING...
 Options are chosen to be similar to dvips' options where possible:
 
-  -D #         Output resolution (default: $D dpi)
-  -O c         Image offset (default: $O)
-  -T c         Image size (also accepts '-T bbox' and '-T tight')
-  -t	       Remove margins (shorthand for '-T tight')
+  -D #         	 Output resolution (default: $D dpi)
+  -O c         	 Image offset (default: $O)
+  -T c         	 Image size (also accepts '-T bbox' and '-T tight')
+  -t	       	 Remove margins (shorthand for '-T tight')
+  --preamble s 	 Add string 's' to the preamble before \begin{document}
 
-  -bg s        Background color (TeX-style color or 'Transparent')
-  -fg s        Foreground color (TeX-style color)
+  -bg s        	 Background color (TeX-style color or 'Transparent')
+  -fg s        	 Foreground color (TeX-style color)
 
-  # = number   s = string
+  # = number   	 s = string
   c = comma-separated dimension pair (e.g., -1.2in,3.4cm)
 
   TEXSTRING is a LaTeX expression betweeen apostrophes (not quotes).
@@ -31,7 +32,7 @@ ENDUSAGE
 }
 
 osc8() {
-    # Given a URL, print it with the OSC 8 hyperlink escape sequence.
+    # Just for fun, given a URL, print it as an OSC 8 hyperlink.
     printf '\e]8;;%s\e\\%s' "$1" "$1"
     printf '\e]8;;\e\\'
 }
@@ -171,7 +172,7 @@ $LATEX <<<"$TEX" > /dev/null ||
     die "$(sed -n '/^Here is how much of TeX/,$d;/^!/,$ p' $key.log)"
 $DVIPNG $key.dvi  > /dev/null ||
     die "$(< $key.log)"
-printf "%${I}s"			# Sixels are indented by text cursor position
+printf "%${I}s"			# Sixels can be indented by text cursor position
 img2sixel $img
 echo				# Sixels should always end with a newline
 
