@@ -6,9 +6,9 @@
 
 ## latex2sixel
 This simple shell script converts **(La)TeX** chunks to sixel output by the following composition of tools:
-```
-  latex [dvi] --> dvipng [png] --> img2sixel
-```
+
+![`latex [dvi] --> dvipng [png] --> img2sixel`](img/pipeline.png)
+
 Therefore, the requirements to render LaTex chunks to a sixel graphics capable console/terminal are as follows:
 
 * LaTeX distribution 
@@ -77,7 +77,7 @@ latex2sixel -fg Dandelion '\LARGE' < protocol.ltx
 
 #### Tips
 
-* Every argument is a separate line
+* Every argument is a separate latex line
   ```
   latex2sixel  'Hello % comment to the end of the line'  'world!'
   ```
