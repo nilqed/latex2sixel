@@ -1,50 +1,69 @@
 #!/bin/bash
 
 
+#
+# config (default)
+#
+pt=11pt				# 10pt, 11pt, or 12pt
+fg=Green
+bg=Black
+D=150				# screen density (dots per inch)
+T=bbox				# "paper" size (or bbox, tight)
+O=1.4cm,0.8cm			# origin offset, from upper left corner
+
 function usage()
 {
 cat <<ENDUSAGE
 
 This is latex2sixel V 1.0.2 (Mon Apr 11 15:59:19 CEST 2022)
 
-Usage: $0 [OPTION]... TEXSTRING
+Usage: $0 [OPTION]... TEXSTRING...
 Options are chosen to be similar to dvips' options where possible:
 
-  -D #         Output resolution
-  -O c         Image offset
-  -T c         Image size (also accepts '-T bbox' and '-T tight')
-  -t	       Remove margins (shorthand for '-T tight')
+  -D #           Output resolution (default: $D dpi)
+  -O c           Image offset (default: $O)
+  -T c           Image size (also accepts '-T bbox' and '-T tight')
+  -t             Remove margins (shorthand for '-T tight')
+  --preamble s   Add string 's' to the preamble before \begin{document}
 
-  -bg s        Background color (TeX-style color or 'Transparent')
-  -fg s        Foreground color (TeX-style color)
+  -bg s          Background color (TeX-style color or 'Transparent')
+  -fg s          Foreground color (TeX-style color)
 
-  # = number   s = string
-  c = comma-separated dimension pair (e.g., 3.2in,-32.1cm)
+  # = number     s = string
+  c = comma-separated dimension pair (e.g., -1.2in,3.4cm)
 
   TEXSTRING is a LaTeX expression betweeen apostrophes (not quotes).
   Examples: '\$\alpha\$' | '\LaTeX' | 'This is math: \$x+y\$'.
 
 Required applications: latex, dvipng, img2sixel.
 Terminals supporting sixel graphics: xterm -ti vt340, mintty, mlterm.
-More info @  https://github.com/saitoha/libsixel
+More info @  $(osc8 https://github.com/saitoha/libsixel)
 ENDUSAGE
 }
 
-if ! tty -s; then
-    set -- "$@" "$(</dev/stdin)"
-fi
+osc8() {
+    # Just for fun, given a URL, print it as an OSC 8 hyperlink.
+    if tty -s </dev/stdout; then
+	printf '\e]8;;%s\e\\%s' "$1" "$1"
+	printf '\e]8;;\e\\'
+    else
+	printf "$1"
+    fi
+}
+
+firsterror() {
+    # Give the name of a Latex log file, print only the first error
+    sed -n '/^Here is how much of TeX/,$ d;
+    	    /^Type X to quit/,$ d;
+	    /^!/,$ p'  "$1"
+}
+
+
+# Lines from file redirection are appended as arguments
+tty -s		     || set -- "$@" "$(</dev/stdin)"
 
 [[ $# == 0 ]]        && { usage;exit; };
 
-#
-# config (default)
-#
-pt=11pt
-fg=Green
-bg=Black
-D=150  #120
-T=bbox  #bbox,tight ...
-O=-1.0cm,-2.0cm
 tmpdir=$(mktemp --tmpdir -d l2s.XXXXXX)
 key=$tmpdir/l2s
 img=$key-$(tr -dc '[A-Za-z]' <<<"$1" | cut -c-70).png
@@ -68,8 +87,10 @@ function die() {
 # option parsing
 #
 TEMP=$(getopt -a -n 'latex2sixel' -o 'D:O:T:ht' \
-       --long 'resolution:,offset:,size:,fg:,forecolor:,bg:,backcolor,help' \
-       -- "$@")  ||  die "Use -h for help"
+	      --long 'resolution:,offset:,size:' \
+	      --long 'fg:,forecolor:,bg:,backcolor,preamble:' \
+	      --long 'help' \
+	      -- "$@")  ||  die "Use -h for help"
 eval set -- "$TEMP"		# Set Bash argv in "$@"
 unset TEMP
 
@@ -100,6 +121,10 @@ while true; do
 	    bg="$2"
 	    shift # past argument
 	    ;;
+	--preamble)
+	    preamble+=($2)
+	    shift # past argument
+	    ;;
 	--) shift; break
 	    ;;
 	*)
@@ -111,27 +136,46 @@ while true; do
 done
 
 
+# Check for \usepackage in "$@" and put it in the preamble[] array.
+# All other args go into mainbody[].
+for arg; do
+    IFS=$'\n'			# Don't split strings on spaces
+    if preamble+=(  $(grep -o '^ *\\usepackage.*$' <<< $arg ) ); then
+	mainbody+=( "%% $arg" )
+    else
+	mainbody+=( "$arg" )
+    fi
+    unset IFS
+done
+
+
 # TeX template 
 
-TEX=$(cat <<EOF
-\documentclass[$pt]{article}
-\usepackage{amsmath,amssymb}
-\usepackage{breqn}
-\pagestyle{empty}
-\begin{document}
- $@
-\end{document}
-EOF
-)
+IFS=$'\n'			# Separate elts of mainbody[*] with newline
+TEX="
+	\documentclass[$pt]{article}
+	${preamble[*]}
+	\usepackage{amsmath,amssymb}
+	\usepackage{breqn}
+	\usepackage[active]{preview}
+	\usepackage[svgnames,x11names,dvipsnames,showerrors]{xcolor}
+	\pagestyle{empty}
+	\begin{document}
+	  \color{$fg}
+	  \begin{preview}
+	    ${mainbody[*]}
+	  \end{preview}
+	\end{document}
+"
+unset IFS
+
+LATEX="latex -jobname=$key -halt-on-error -output-directory=$tmpdir"
+DVIPNG="dvipng --truecolor -T $T -D $D -O $O -fg $fg -bg $bg -q -o $img"
 
 
-LATEX="latex -jobname=$key -halt-on-error -output-directory $tmpdir"
-DVIPNG="dvipng -T $T -D $D -O $O -fg $fg -bg $bg -q -o $img"
-
-
-$LATEX <<<"$TEX" > /dev/null ||
-    die "$(sed -n '/^Here is how much of TeX/,$d;/^!/,$ p' $key.log)"
-$DVIPNG $key.dvi  > /dev/null
+$LATEX <<<"$TEX" > /dev/null     || die "$(firsterror $key.log)"
+$DVIPNG $key.dvi > /dev/null     || die "$(< $key.log)"
 img2sixel $img
+echo				# Sixel requires newline before printing text
 
 # Temp files are automatically removed by cleanup() at exit.

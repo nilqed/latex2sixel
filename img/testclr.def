@@ -1,0 +1,26 @@
+% The following -*- latex -*- code for showing all SVG/X11 colornames
+% was extracted from https://github.com/latex3/xcolor/blob/main/xcolor.dtx
+
+% Usage:
+%   \usepackage{multicol}
+%   \input{testclr.def}
+%   \ColorList3{svg}{svg}\Testclr
+%   \ColorList4{x11}{x11}\Testclr
+
+\makeatletter
+\def\testclr#1#{\@testclr{#1}}
+\def\@testclr#1#2{{\fboxsep\z@\fbox{\colorbox#1{#2}{\strut\phantom{XX}}}}}
+\def\Testclr#1#{\@Testclr{#1}}
+\def\@Testclr#1#2#3{\testclr#1{#2}~\rlap{\Color[-]{#3}}\\}
+\def\TestClr#1#{\@TestClr{#1}}
+\def\@TestClr#1#2#3{\testclr#1{#2}~\rlap{\Color[+]{#3}}\\}
+\newcommand*\Color[2][+]{\textsl{#2}\ifx#1+\index{color names\levelchar\textsl{#2}\string|usage}\fi}
+
+\def\ColorList#1#2#3#4{\begin{multicols}{#1}[\section*{The \textsf{#2} colors}]
+  \footnotesize
+  \def\preparecolorset
+   {\def\XC@@cmd[####1]####2####3####4{\definecolor[####1]{@test}{####3}{####4}#4{@test}{####2}}\@testopt{\XC@definecolorset}{}}
+  \edef\restore{\catcode`\noexpand\%\the\catcode`\%\relax}
+  \catcode`\%14\relax\input{#3nam.def}\restore
+  \end{multicols}}
+\makeatother
