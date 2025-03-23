@@ -43,8 +43,12 @@ ENDUSAGE
 
 osc8() {
     # Just for fun, given a URL, print it as an OSC 8 hyperlink.
-    printf '\e]8;;%s\e\\%s' "$1" "$1"
-    printf '\e]8;;\e\\'
+    if tty -s </dev/stdout; then
+	printf '\e]8;;%s\e\\%s' "$1" "$1"
+	printf '\e]8;;\e\\'
+    else
+	printf "$1"
+    fi
 }
 
 firsterror() {
