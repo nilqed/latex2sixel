@@ -107,10 +107,18 @@ latex2sixel -fg Dandelion '\LARGE' < protocol.ltx
   EOF
   ```
 
-* See the files in the [samples](samples/) directory
+* More examples are in the [samples](samples/) directory
 
-  In particular, the [ltx0.txt](samples/ltx0.txt) has many useful
-  examples.
+  ```bash
+  latex2sixel < samples/hdotsfor.ltx
+  ```
+  In particular, see [ltx0.txt](samples/ltx0.txt) for a range of
+  useful and interesting tidbits.
+
+  ```bash
+  cd samples
+  sh ltx0.txt
+  ```
 
 
 ## Applications
