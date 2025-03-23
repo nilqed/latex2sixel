@@ -7,7 +7,7 @@
 ## latex2sixel
 This simple shell script converts **(La)TeX** chunks to sixel output by the following composition of tools:
 ```
-  latex [dvi] --> dvipng [png] --> img2sixel  
+  latex [dvi] --> dvipng [png] --> img2sixel
 ```
 Therefore, the requirements to render LaTex chunks to a sixel graphics capable console/terminal are as follows:
 
@@ -16,24 +16,25 @@ Therefore, the requirements to render LaTex chunks to a sixel graphics capable c
 * libsixel (see [Install](http://saitoha.github.io/libsixel/#install))
 * Sixel capable terminal
 
-```
-$ latex2sixel
+### Usage
 
+```
 This is latex2sixel V 1.0.2 (Mon Apr 11 15:59:19 CEST 2022)
 
-Usage: ./latex2sixel [OPTION]... TEXSTRING
+Usage: latex2sixel [OPTION]... TEXSTRING...
 Options are chosen to be similar to dvips' options where possible:
 
-  -D #         Output resolution
-  -O c         Image offset
-  -T c         Image size (also accepts '-T bbox' and '-T tight')
-  -t	       Remove margins (shorthand for '-T tight')
+  -D #           Output resolution (default: 150 dpi)
+  -O c           Image offset (default: 1.4cm,0.8cm)
+  -T c           Image size (also accepts '-T bbox' and '-T tight')
+  -t             Remove margins (shorthand for '-T tight')
+  --preamble s   Add string 's' to the preamble before \begin{document}
 
-  -bg s        Background color (TeX-style color or 'Transparent')
-  -fg s        Foreground color (TeX-style color)
+  -bg s          Background color (TeX-style color or 'Transparent')
+  -fg s          Foreground color (TeX-style color)
 
-  # = number   s = string
-  c = comma-separated dimension pair (e.g., 3.2in,-32.1cm)
+  # = number     s = string
+  c = comma-separated dimension pair (e.g., -1.2in,3.4cm)
 
   TEXSTRING is a LaTeX expression betweeen apostrophes (not quotes).
   Examples: '$\alpha$' | '\LaTeX' | 'This is math: $x+y$'.
@@ -41,8 +42,6 @@ Options are chosen to be similar to dvips' options where possible:
 Required applications: latex, dvipng, img2sixel.
 Terminals supporting sixel graphics: xterm -ti vt340, mintty, mlterm.
 More info @  https://github.com/saitoha/libsixel
-
-
 ```
 
 The script is just a skeleton and may be adjusted to your needs. 
@@ -75,6 +74,43 @@ latex2sixel -fg Dandelion '\LARGE' < protocol.ltx
 ```
 
 ![output of protocol.ltx in an xterm ](img/xterm.png)
+
+#### Tips
+
+* Every argument is a separate line
+  ```
+  latex2sixel  'Hello % comment to the end of the line'  'world!'
+  ```
+
+* Put `\usepackage{foo}` in a separate argument
+
+  ``` bash
+  latex2sixel '\usepackage{bm}' '$\bm{\mathsf{A}}\bm x = \bm b$'
+  ```
+
+* Colors within equations can be controlled using `\mathcolor{}` 
+
+  ``` bash
+  latex2sixel '\Huge${\mathcolor{Mulberry}\wp}_\alpha$'
+  ```
+
+* The -D / --resolution setting can be used for quick zooming
+
+  ```bash
+  latex2sixel -D 300 -t <<-EOF
+	\def\bars#1{\hbox to #1{\vrule width0pt height 1mm depth 2mm%
+		\vrule\morebars\morebars}}
+	\def\morebars{\hfil\vrule\hfil\vrule\hfil\vrule\hfil\vrule\hfil\vrule}
+	\def\ruler#1{\vbox{\bars{#1}\hrule}}
+	\ruler{10in}
+	Each mark is one inch
+  EOF
+  ```
+
+* See the files in the [samples](samples/) directory
+
+  In particular, the [ltx0.txt](samples/ltx0.txt) has many useful
+  examples.
 
 
 ## Applications
