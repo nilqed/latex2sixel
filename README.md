@@ -50,6 +50,14 @@ The script is just a skeleton and may be adjusted to your needs.
 Just copy the file(s) in the `script` directory to a folder in the path,
 e.g. `/usr/local/bin` or `.local/bin`.
 
+
+#### TeX-Live (`openout_any=p` issue)
+ 
+ * Edit the file `/usr/share/texlive/texmf-dist/web2c/texmf.cnf` (sudo)
+ * Search for openout_any=p (p for paranoid mode)
+ * Replace by openout_any=r (restricted)  or openout_any=a (means always).
+
+
 #### Examples
 ```
 latex2sixel '$-\frac{\hbar^2}{2m}\,\Delta\psi+V\,\psi=E\,\psi$'
